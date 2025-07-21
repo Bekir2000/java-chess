@@ -3,6 +3,7 @@ package org.example.chessengine.pieces;
 import org.example.chessengine.board.Board;
 import org.example.chessengine.board.Square;
 import org.example.chessengine.move.Move;
+import org.example.chessengine.move.MoveType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,18 +22,41 @@ public class Knight extends Piece {
     @Override
     public List<Move> generateMoves(Board board, Square from) {
         List<Move> moves = new ArrayList<>();
+
         for (int[] d : DIRECTIONS) {
             int file = from.file() + d[0];
             int rank = from.rank() + d[1];
             Square target = new Square(file, rank);
-            if (target.isValid()) {
-                Piece targetPiece = board.getPiece(target);
-                if (targetPiece == null || targetPiece.getColor() != this.color) {
-                    moves.add(new Move(from, target));
-                }
+
+            if (!target.isValid()) continue;
+
+            Piece targetPiece = board.getPiece(target);
+            if (targetPiece == null) {
+                moves.add(new Move(from, target, MoveType.NORMAL));
+            } else if (targetPiece.getColor() != this.color) {
+                moves.add(new Move(from, target, MoveType.CAPTURE));
             }
         }
+
         return moves;
     }
+
+    @Override
+    public boolean isValidMove(Board board, Move move) {
+        Square from = move.getFrom();
+        Square to = move.getTo();
+
+        int df = Math.abs(from.file() - to.file());
+        int dr = Math.abs(from.rank() - to.rank());
+
+        if (!to.isValid()) return false;
+
+        boolean isKnightJump = (df == 2 && dr == 1) || (df == 1 && dr == 2);
+        if (!isKnightJump) return false;
+
+        Piece target = board.getPiece(to);
+        return target == null || target.getColor() != this.color;
+    }
 }
+
 
