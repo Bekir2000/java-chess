@@ -95,5 +95,24 @@ public class FENUtils {
         }
         return piece.getColor() == Color.WHITE ? Character.toUpperCase(c) : c;
     }
+
+    public static void overwriteGameState(Game target, Game source) {
+        // Copy board
+        for (int file = 0; file < 8; file++) {
+            for (int rank = 0; rank < 8; rank++) {
+                Square square = new Square(file, rank);
+                target.placePiece(square, source.getBoard().getPiece(square));
+            }
+        }
+
+        // Copy game state
+        target.setTurn(source.getTurn());
+        target.setWhiteKingPos(source.getWhiteKingPos());
+        target.setBlackKingPos(source.getBlackKingPos());
+
+        // Reset history
+        target.clearHistory();
+    }
+
 }
 

@@ -1,5 +1,6 @@
 package org.example.chessengine.state;
 
+import org.example.chessengine.fen.FENUtils;
 import org.example.chessengine.move.Move;
 import org.example.chessengine.move.MoveGenerator;
 import org.example.chessengine.move.MoveValidator;
@@ -14,35 +15,30 @@ public class Game {
     private Color turn;
     private final Deque<MoveHistoryEntry> history;
 
-    private record MoveHistoryEntry(Move move, Piece movedPiece, Piece capturedPiece) {}
-
     private Square whiteKingPos;
     private Square blackKingPos;
+
+    private record MoveHistoryEntry(Move move, Piece movedPiece, Piece capturedPiece) {}
 
     public Game(Board board, Color startingColor) {
         this.board = board;
         this.turn = startingColor;
         this.history = new ArrayDeque<>();
-
         this.whiteKingPos = findKing(Color.WHITE);
         this.blackKingPos = findKing(Color.BLACK);
     }
 
     public Game() {
-        this.board = new Board();
-        this.turn = Color.WHITE;
-        this.history = new ArrayDeque<>();
-
-        this.whiteKingPos = findKing(Color.WHITE);
-        this.blackKingPos = findKing(Color.BLACK);
+        this(new Board(), Color.WHITE);
     }
 
-    public Board getBoard() {
-        return board;
+    public void loadFromFEN(String fen) {
+        Game fromFEN = FENUtils.fromFEN(fen);
+        FENUtils.overwriteGameState(this, fromFEN);
     }
 
-    public Color getTurn() {
-        return turn;
+    public String getFEN() {
+        return FENUtils.toFEN(this);
     }
 
     public boolean tryMove(Move move) {
@@ -58,15 +54,10 @@ public class Game {
         Piece movedPiece = board.getPiece(move.from());
         Piece capturedPiece = board.getPiece(move.to());
 
-        // Store current state for undo
-        MoveHistoryEntry entry = new MoveHistoryEntry(move, movedPiece, capturedPiece);
-        history.push(entry);
-
+        history.push(new MoveHistoryEntry(move, movedPiece, capturedPiece));
         board.setPiece(move.to(), movedPiece);
         board.removePiece(move.from());
-
         updateKingPositionIfNeeded(move.to(), movedPiece);
-
         turn = turn.opposite();
     }
 
@@ -76,9 +67,7 @@ public class Game {
         MoveHistoryEntry entry = history.pop();
         board.setPiece(entry.move().from(), entry.movedPiece());
         board.setPiece(entry.move().to(), entry.capturedPiece());
-
         updateKingPositionIfNeeded(entry.move().from(), entry.movedPiece());
-
         turn = turn.opposite();
     }
 
@@ -108,13 +97,42 @@ public class Game {
         Piece removed = board.getPiece(square);
         board.setPiece(square, null);
 
-        if (removed instanceof King) {
-            if (removed.getColor() == Color.WHITE) {
-                whiteKingPos = null;
-            } else {
-                blackKingPos = null;
-            }
+        if (removed instanceof King king) {
+            if (king.getColor() == Color.WHITE) whiteKingPos = null;
+            else blackKingPos = null;
         }
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public Color getTurn() {
+        return turn;
+    }
+
+    public Square getWhiteKingPos() {
+        return whiteKingPos;
+    }
+
+    public Square getBlackKingPos() {
+        return blackKingPos;
+    }
+
+    public void setTurn(Color turn) {
+        this.turn = turn;
+    }
+
+    public void setWhiteKingPos(Square square) {
+        this.whiteKingPos = square;
+    }
+
+    public void setBlackKingPos(Square square) {
+        this.blackKingPos = square;
+    }
+
+    public void clearHistory() {
+        this.history.clear();
     }
 
     private void updateKingPositionIfNeeded(Square square, Piece piece) {
@@ -139,14 +157,7 @@ public class Game {
         }
         return null;
     }
-
-    public Square getWhiteKingPos() {
-        return whiteKingPos;
-    }
-
-    public Square getBlackKingPos() {
-        return blackKingPos;
-    }
 }
+
 
 
