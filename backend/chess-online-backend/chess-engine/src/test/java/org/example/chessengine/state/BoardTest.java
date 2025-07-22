@@ -1,4 +1,4 @@
-package org.example.chessengine.board;
+package org.example.chessengine.state;
 
 import org.example.chessengine.pieces.Color;
 import org.example.chessengine.pieces.Pawn;

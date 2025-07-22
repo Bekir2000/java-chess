@@ -1,4 +1,4 @@
-package org.example.chessengine.board;
+package org.example.chessengine.state;
 
 import org.example.chessengine.pieces.Piece;
 
@@ -17,11 +17,11 @@ public class Board {
         return squares[square.file()][square.rank()];
     }
 
-    public void setPiece(Square square, Piece piece) {
+    protected void setPiece(Square square, Piece piece) {
         squares[square.file()][square.rank()] = piece;
     }
 
-    public void removePiece(Square square) {
+    protected void removePiece(Square square) {
         squares[square.file()][square.rank()] = null;
     }
 

@@ -1,7 +1,8 @@
 package org.example.chessengine.pieces;
 
-import org.example.chessengine.board.Board;
-import org.example.chessengine.board.Square;
+import org.example.chessengine.state.Board;
+import org.example.chessengine.state.Game;
+import org.example.chessengine.state.Square;
 import org.example.chessengine.move.Move;
 import org.example.chessengine.move.MoveType;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,13 +14,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class KnightTest {
 
+    private Game game;
     private Board board;
     private Knight whiteKnight;
     private Knight blackKnight;
 
     @BeforeEach
     void setUp() {
-        board = new Board();
+        game = new Game();
+        board = game.getBoard();
         whiteKnight = new Knight(Color.WHITE);
         blackKnight = new Knight(Color.BLACK);
     }
@@ -27,7 +30,7 @@ class KnightTest {
     @Test
     void testWhiteKnightAllLegalMovesFromCenter() {
         Square from = new Square(4, 4);
-        board.setPiece(from, whiteKnight);
+        game.placePiece(from, whiteKnight);
 
         List<Move> moves = whiteKnight.generateMoves(board, from);
 
@@ -50,8 +53,8 @@ class KnightTest {
     void testWhiteKnightCapturesEnemy() {
         Square from = new Square(4, 4);
         Square to = new Square(6, 5);
-        board.setPiece(from, whiteKnight);
-        board.setPiece(to, blackKnight);
+        game.placePiece(from, whiteKnight);
+        game.placePiece(to, blackKnight);
 
         List<Move> moves = whiteKnight.generateMoves(board, from);
         assertTrue(moves.stream().anyMatch(m -> m.to().equals(to) && m.type() == MoveType.CAPTURE));
@@ -62,8 +65,8 @@ class KnightTest {
     void testWhiteKnightCannotCaptureFriendly() {
         Square from = new Square(4, 4);
         Square to = new Square(6, 5);
-        board.setPiece(from, whiteKnight);
-        board.setPiece(to, new Knight(Color.WHITE));
+        game.placePiece(from, whiteKnight);
+        game.placePiece(to, new Knight(Color.WHITE));
 
         List<Move> moves = whiteKnight.generateMoves(board, from);
         assertTrue(moves.stream().noneMatch(m -> m.to().equals(to)));
@@ -73,7 +76,7 @@ class KnightTest {
     @Test
     void testKnightCanJumpOverPieces() {
         Square from = new Square(4, 4);
-        board.setPiece(from, whiteKnight);
+        game.placePiece(from, whiteKnight);
 
         // Place friendly pawns around the knight
         for (int df = -1; df <= 1; df++) {
@@ -81,7 +84,7 @@ class KnightTest {
                 if (df == 0 && dr == 0) continue;
                 Square block = new Square(from.file() + df, from.rank() + dr);
                 if (block.isValid()) {
-                    board.setPiece(block, new Pawn(Color.WHITE));
+                    game.placePiece(block, new Pawn(Color.WHITE));
                 }
             }
         }
@@ -93,7 +96,7 @@ class KnightTest {
     @Test
     void testKnightIgnoresInvalidOffBoardMoves() {
         Square from = new Square(0, 0); // corner
-        board.setPiece(from, whiteKnight);
+        game.placePiece(from, whiteKnight);
 
         List<Move> moves = whiteKnight.generateMoves(board, from);
         for (Move move : moves) {
@@ -105,7 +108,7 @@ class KnightTest {
     void testBlackKnightMovementSameAsWhite() {
         Square from = new Square(3, 3);
         Square to = new Square(5, 4);
-        board.setPiece(from, blackKnight);
+        game.placePiece(from, blackKnight);
 
         List<Move> moves = blackKnight.generateMoves(board, from);
         assertTrue(moves.stream().anyMatch(m -> m.to().equals(to)));
@@ -116,8 +119,8 @@ class KnightTest {
     void testBlackKnightCapturesEnemy() {
         Square from = new Square(3, 3);
         Square to = new Square(1, 2);
-        board.setPiece(from, blackKnight);
-        board.setPiece(to, whiteKnight);
+        game.placePiece(from, blackKnight);
+        game.placePiece(to, whiteKnight);
 
         List<Move> moves = blackKnight.generateMoves(board, from);
         assertTrue(moves.stream().anyMatch(m -> m.to().equals(to) && m.type() == MoveType.CAPTURE));
@@ -128,8 +131,8 @@ class KnightTest {
     void testBlackKnightCannotCaptureFriendly() {
         Square from = new Square(3, 3);
         Square to = new Square(1, 2);
-        board.setPiece(from, blackKnight);
-        board.setPiece(to, new Knight(Color.BLACK));
+        game.placePiece(from, blackKnight);
+        game.placePiece(to, new Knight(Color.BLACK));
 
         List<Move> moves = blackKnight.generateMoves(board, from);
         assertTrue(moves.stream().noneMatch(m -> m.to().equals(to)));

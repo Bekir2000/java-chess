@@ -1,7 +1,8 @@
 package org.example.chessengine.pieces;
 
-import org.example.chessengine.board.Board;
-import org.example.chessengine.board.Square;
+import org.example.chessengine.state.Board;
+import org.example.chessengine.state.Game;
+import org.example.chessengine.state.Square;
 import org.example.chessengine.move.Move;
 import org.example.chessengine.move.MoveType;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,13 +14,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PawnTest {
 
+    private Game game;
     private Board board;
     private Pawn whitePawn;
     private Pawn blackPawn;
 
     @BeforeEach
     void setUp() {
-        board = new Board();
+        game = new Game();
+        board = game.getBoard();
         whitePawn = new Pawn(Color.WHITE);
         blackPawn = new Pawn(Color.BLACK);
     }
@@ -40,8 +43,8 @@ class PawnTest {
     void testWhitePawnBlockedForward() {
         Square from = new Square(2, 1);
         Square block = new Square(2, 2);
-        board.setPiece(from, whitePawn);
-        board.setPiece(block, new Pawn(Color.BLACK));
+        game.placePiece(from, whitePawn);
+        game.placePiece(block, new Pawn(Color.BLACK));
 
         assertFalse(whitePawn.isValidMove(board, new Move(from, block, MoveType.NORMAL)));
         assertTrue(whitePawn.generateMoves(board, from).isEmpty());
@@ -51,8 +54,8 @@ class PawnTest {
     void testWhitePawnDiagonalCapture() {
         Square from = new Square(4, 4);
         Square target = new Square(5, 5);
-        board.setPiece(from, whitePawn);
-        board.setPiece(target, blackPawn);
+        game.placePiece(from, whitePawn);
+        game.placePiece(target, blackPawn);
         testValidMove(whitePawn, from, target, MoveType.CAPTURE);
     }
 
@@ -60,7 +63,7 @@ class PawnTest {
     void testWhitePawnInvalidDiagonalCapture() {
         Square from = new Square(4, 4);
         Square diag = new Square(5, 5);
-        board.setPiece(from, whitePawn);
+        game.placePiece(from, whitePawn);
 
         assertFalse(whitePawn.isValidMove(board, new Move(from, diag, MoveType.CAPTURE)));
         assertTrue(whitePawn.generateMoves(board, from).stream().noneMatch(m -> m.to().equals(diag)));
@@ -70,7 +73,7 @@ class PawnTest {
     void testWhitePawnPromotion() {
         Square from = new Square(4, 6);
         Square to = new Square(4, 7);
-        board.setPiece(from, whitePawn);
+        game.placePiece(from, whitePawn);
         testValidMove(whitePawn, from, to, MoveType.PROMOTION);
     }
 
@@ -78,7 +81,7 @@ class PawnTest {
     void testWhitePawnCannotMoveBackward() {
         Square from = new Square(4, 4);
         Square to = new Square(4, 3);
-        board.setPiece(from, whitePawn);
+        game.placePiece(from, whitePawn);
         assertFalse(whitePawn.isValidMove(board, new Move(from, to, MoveType.NORMAL)));
         assertTrue(whitePawn.generateMoves(board, from).stream().noneMatch(m -> m.to().equals(to)));
     }
@@ -87,7 +90,7 @@ class PawnTest {
     void testWhitePawnCannotDoubleStepOffStart() {
         Square from = new Square(3, 3);
         Square to = new Square(3, 5);
-        board.setPiece(from, whitePawn);
+        game.placePiece(from, whitePawn);
         assertFalse(whitePawn.isValidMove(board, new Move(from, to, MoveType.NORMAL)));
         assertTrue(whitePawn.generateMoves(board, from).stream().noneMatch(m -> m.to().equals(to)));
     }
@@ -96,7 +99,7 @@ class PawnTest {
     void testWhitePawnInvalidLongMove() {
         Square from = new Square(4, 1);
         Square to = new Square(4, 4);
-        board.setPiece(from, whitePawn);
+        game.placePiece(from, whitePawn);
         assertFalse(whitePawn.isValidMove(board, new Move(from, to, MoveType.NORMAL)));
     }
 
@@ -116,8 +119,8 @@ class PawnTest {
     void testBlackPawnBlockedForward() {
         Square from = new Square(2, 6);
         Square block = new Square(2, 5);
-        board.setPiece(from, blackPawn);
-        board.setPiece(block, new Pawn(Color.WHITE));
+        game.placePiece(from, blackPawn);
+        game.placePiece(block, new Pawn(Color.WHITE));
 
         assertFalse(blackPawn.isValidMove(board, new Move(from, block, MoveType.NORMAL)));
         assertTrue(blackPawn.generateMoves(board, from).isEmpty());
@@ -127,8 +130,8 @@ class PawnTest {
     void testBlackPawnDiagonalCapture() {
         Square from = new Square(4, 4);
         Square target = new Square(5, 3);
-        board.setPiece(from, blackPawn);
-        board.setPiece(target, whitePawn);
+        game.placePiece(from, blackPawn);
+        game.placePiece(target, whitePawn);
         testValidMove(blackPawn, from, target, MoveType.CAPTURE);
     }
 
@@ -136,7 +139,7 @@ class PawnTest {
     void testBlackPawnInvalidDiagonalCapture() {
         Square from = new Square(4, 4);
         Square diag = new Square(5, 3);
-        board.setPiece(from, blackPawn);
+        game.placePiece(from, blackPawn);
 
         assertFalse(blackPawn.isValidMove(board, new Move(from, diag, MoveType.CAPTURE)));
         assertTrue(blackPawn.generateMoves(board, from).stream().noneMatch(m -> m.to().equals(diag)));
@@ -146,7 +149,7 @@ class PawnTest {
     void testBlackPawnPromotion() {
         Square from = new Square(4, 1);
         Square to = new Square(4, 0);
-        board.setPiece(from, blackPawn);
+        game.placePiece(from, blackPawn);
         testValidMove(blackPawn, from, to, MoveType.PROMOTION);
     }
 
@@ -154,7 +157,7 @@ class PawnTest {
     void testBlackPawnCannotMoveBackward() {
         Square from = new Square(4, 4);
         Square to = new Square(4, 5);
-        board.setPiece(from, blackPawn);
+        game.placePiece(from, blackPawn);
         assertFalse(blackPawn.isValidMove(board, new Move(from, to, MoveType.NORMAL)));
         assertTrue(blackPawn.generateMoves(board, from).stream().noneMatch(m -> m.to().equals(to)));
     }
@@ -163,7 +166,7 @@ class PawnTest {
     void testBlackPawnCannotDoubleStepOffStart() {
         Square from = new Square(3, 4);
         Square to = new Square(3, 2);
-        board.setPiece(from, blackPawn);
+        game.placePiece(from, blackPawn);
         assertFalse(blackPawn.isValidMove(board, new Move(from, to, MoveType.NORMAL)));
         assertTrue(blackPawn.generateMoves(board, from).stream().noneMatch(m -> m.to().equals(to)));
     }
@@ -172,14 +175,14 @@ class PawnTest {
     void testBlackPawnInvalidLongMove() {
         Square from = new Square(4, 6);
         Square to = new Square(4, 3);
-        board.setPiece(from, blackPawn);
+        game.placePiece(from, blackPawn);
         assertFalse(blackPawn.isValidMove(board, new Move(from, to, MoveType.NORMAL)));
     }
 
     // --------- HELPER ---------
 
     private void testValidMove(Pawn pawn, Square from, Square to, MoveType type) {
-        board.setPiece(from, pawn);
+        game.placePiece(from, pawn);
         Move move = new Move(from, to, type);
         List<Move> moves = pawn.generateMoves(board, from);
 

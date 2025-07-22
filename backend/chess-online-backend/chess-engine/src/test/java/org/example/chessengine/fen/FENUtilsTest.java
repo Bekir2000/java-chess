@@ -1,7 +1,8 @@
-package org.example.chessengine.state;
+package org.example.chessengine.fen;
 
-import org.example.chessengine.board.Board;
-import org.example.chessengine.board.Square;
+import org.example.chessengine.state.Board;
+import org.example.chessengine.state.Game;
+import org.example.chessengine.state.Square;
 import org.example.chessengine.pieces.*;
 import org.junit.jupiter.api.Test;
 

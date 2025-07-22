@@ -1,7 +1,8 @@
 package org.example.chessengine.pieces;
 
-import org.example.chessengine.board.Board;
-import org.example.chessengine.board.Square;
+import org.example.chessengine.state.Board;
+import org.example.chessengine.state.Game;
+import org.example.chessengine.state.Square;
 import org.example.chessengine.move.Move;
 import org.example.chessengine.move.MoveType;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,13 +14,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class KingTest {
 
+    private Game game;
     private Board board;
     private King whiteKing;
     private King blackKing;
 
     @BeforeEach
     void setUp() {
-        board = new Board();
+        game = new Game();
+        board = game.getBoard();
         whiteKing = new King(Color.WHITE);
         blackKing = new King(Color.BLACK);
     }
@@ -27,7 +30,7 @@ class KingTest {
     @Test
     void testWhiteKingAllAdjacentMovesFromCenter() {
         Square from = new Square(4, 4);
-        board.setPiece(from, whiteKing);
+        game.placePiece(from, whiteKing);
 
         List<Move> moves = whiteKing.generateMoves(board, from);
         assertEquals(8, moves.size());
@@ -48,8 +51,8 @@ class KingTest {
     void testWhiteKingBlockedByFriendlyPiece() {
         Square from = new Square(4, 4);
         Square blocker = new Square(5, 5);
-        board.setPiece(from, whiteKing);
-        board.setPiece(blocker, new Pawn(Color.WHITE));
+        game.placePiece(from, whiteKing);
+        game.placePiece(blocker, new Pawn(Color.WHITE));
 
         List<Move> moves = whiteKing.generateMoves(board, from);
 
@@ -61,8 +64,8 @@ class KingTest {
     void testWhiteKingCapturesEnemyPiece() {
         Square from = new Square(4, 4);
         Square target = new Square(3, 3);
-        board.setPiece(from, whiteKing);
-        board.setPiece(target, new Pawn(Color.BLACK));
+        game.placePiece(from, whiteKing);
+        game.placePiece(target, new Pawn(Color.BLACK));
 
         List<Move> moves = whiteKing.generateMoves(board, from);
         assertTrue(moves.stream().anyMatch(m -> m.to().equals(target) && m.type() == MoveType.CAPTURE));
@@ -73,7 +76,7 @@ class KingTest {
     void testKingCannotMoveMoreThanOneSquare() {
         Square from = new Square(4, 4);
         Square tooFar = new Square(4, 6);
-        board.setPiece(from, whiteKing);
+        game.placePiece(from, whiteKing);
 
         Move move = new Move(from, tooFar, MoveType.NORMAL);
         assertFalse(whiteKing.isValidMove(board, move));
@@ -84,7 +87,7 @@ class KingTest {
     @Test
     void testKingEdgeOfBoard() {
         Square from = new Square(0, 0); // a1
-        board.setPiece(from, whiteKing);
+        game.placePiece(from, whiteKing);
 
         List<Move> moves = whiteKing.generateMoves(board, from);
 
@@ -96,7 +99,7 @@ class KingTest {
     void testBlackKingSameBehaviorAsWhite() {
         Square from = new Square(3, 3);
         Square to = new Square(3, 2);
-        board.setPiece(from, blackKing);
+        game.placePiece(from, blackKing);
 
         assertTrue(blackKing.isValidMove(board, new Move(from, to, MoveType.NORMAL)));
         assertTrue(blackKing.generateMoves(board, from).stream().anyMatch(m -> m.to().equals(to)));
@@ -106,8 +109,8 @@ class KingTest {
     void testBlackKingCapturesWhitePiece() {
         Square from = new Square(5, 5);
         Square target = new Square(6, 6);
-        board.setPiece(from, blackKing);
-        board.setPiece(target, whiteKing);
+        game.placePiece(from, blackKing);
+        game.placePiece(target, whiteKing);
 
         assertTrue(blackKing.isValidMove(board, new Move(from, target, MoveType.CAPTURE)));
         assertTrue(blackKing.generateMoves(board, from).stream()

@@ -1,7 +1,8 @@
 package org.example.chessengine.pieces;
 
-import org.example.chessengine.board.Board;
-import org.example.chessengine.board.Square;
+import org.example.chessengine.state.Board;
+import org.example.chessengine.state.Game;
+import org.example.chessengine.state.Square;
 import org.example.chessengine.move.Move;
 import org.example.chessengine.move.MoveType;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,13 +14,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RookTest {
 
+    private Game game;
     private Board board;
     private Rook whiteRook;
     private Rook blackRook;
 
     @BeforeEach
     void setUp() {
-        board = new Board();
+        game = new Game();
+        board = game.getBoard();
         whiteRook = new Rook(Color.WHITE);
         blackRook = new Rook(Color.BLACK);
     }
@@ -27,7 +30,7 @@ class RookTest {
     @Test
     void testWhiteRookMovesUnblockedFromCenter() {
         Square from = new Square(4, 4); // e5
-        board.setPiece(from, whiteRook);
+        game.placePiece(from, whiteRook);
 
         List<Move> moves = whiteRook.generateMoves(board, from);
 
@@ -43,8 +46,8 @@ class RookTest {
     void testRookBlockedByFriendlyPiece() {
         Square from = new Square(4, 4);
         Square blocker = new Square(4, 6); // forward
-        board.setPiece(from, whiteRook);
-        board.setPiece(blocker, new Pawn(Color.WHITE));
+        game.placePiece(from, whiteRook);
+        game.placePiece(blocker, new Pawn(Color.WHITE));
 
         List<Move> moves = whiteRook.generateMoves(board, from);
 
@@ -56,8 +59,8 @@ class RookTest {
     void testRookCanCaptureEnemyPiece() {
         Square from = new Square(4, 4);
         Square target = new Square(4, 6);
-        board.setPiece(from, whiteRook);
-        board.setPiece(target, new Pawn(Color.BLACK));
+        game.placePiece(from, whiteRook);
+        game.placePiece(target, new Pawn(Color.BLACK));
 
         List<Move> moves = whiteRook.generateMoves(board, from);
 
@@ -70,9 +73,9 @@ class RookTest {
         Square from = new Square(4, 4);
         Square enemy = new Square(4, 5);
         Square behind = new Square(4, 6);
-        board.setPiece(from, whiteRook);
-        board.setPiece(enemy, new Pawn(Color.BLACK));
-        board.setPiece(behind, new Pawn(Color.BLACK));
+        game.placePiece(from, whiteRook);
+        game.placePiece(enemy, new Pawn(Color.BLACK));
+        game.placePiece(behind, new Pawn(Color.BLACK));
 
         List<Move> moves = whiteRook.generateMoves(board, from);
         assertTrue(moves.stream().anyMatch(m -> m.to().equals(enemy)));
@@ -82,7 +85,7 @@ class RookTest {
     @Test
     void testBlackRookSameLogicAsWhite() {
         Square from = new Square(3, 3);
-        board.setPiece(from, blackRook);
+        game.placePiece(from, blackRook);
         List<Move> moves = blackRook.generateMoves(board, from);
 
         assertTrue(moves.stream().anyMatch(m -> m.to().equals(new Square(3, 0))));
@@ -95,8 +98,8 @@ class RookTest {
     void testBlackRookCapturesWhitePiece() {
         Square from = new Square(3, 3);
         Square target = new Square(3, 6);
-        board.setPiece(from, blackRook);
-        board.setPiece(target, new Rook(Color.WHITE));
+        game.placePiece(from, blackRook);
+        game.placePiece(target, new Rook(Color.WHITE));
 
         Move move = new Move(from, target, MoveType.CAPTURE);
         assertTrue(blackRook.isValidMove(board, move));
@@ -107,7 +110,7 @@ class RookTest {
     @Test
     void testRookEdgeOfBoard() {
         Square from = new Square(0, 0);
-        board.setPiece(from, whiteRook);
+        game.placePiece(from, whiteRook);
 
         List<Move> moves = whiteRook.generateMoves(board, from);
         assertTrue(moves.stream().allMatch(m -> m.to().isValid()));

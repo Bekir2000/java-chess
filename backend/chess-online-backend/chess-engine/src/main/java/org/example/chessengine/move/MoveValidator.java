@@ -1,27 +1,23 @@
 package org.example.chessengine.move;
 
-import org.example.chessengine.pieces.Color;
+import org.example.chessengine.pieces.Piece;
 import org.example.chessengine.state.Game;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MoveValidator {
 
-    public List<Move> generateLegalMoves(Game game, Color color) {
-        List<Move> legalMoves = new ArrayList<>();
-        MoveGenerator generator = new MoveGenerator();
-        List<Move> pseudoMoves = generator.generateAllMoves(game.getBoard(), color);
+    public boolean isLegalMove(Game game, Move move) {
+        Piece piece = game.getBoard().getPiece(move.from());
+        if (piece == null || piece.getColor() != game.getTurn()) return false;
 
-        for (Move move : pseudoMoves) {
-            game.makeMove(move);
-            if (!game.isInCheck(color)) {
-                legalMoves.add(move);
-            }
-            game.undoMove();
-        }
+        if (!piece.isValidMove(game.getBoard(), move)) return false;
 
-        return legalMoves;
+        // Temporarily make the move
+        game.makeMove(move);
+        boolean kingIsInCheck = game.isInCheck(game.getTurn().opposite());
+        game.undoMove(); // Restore state
+
+        return !kingIsInCheck;
     }
 }
+
 

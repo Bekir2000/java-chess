@@ -1,6 +1,6 @@
 package org.example.chessengine.move;
 
-import org.example.chessengine.board.Square;
+import org.example.chessengine.state.Square;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

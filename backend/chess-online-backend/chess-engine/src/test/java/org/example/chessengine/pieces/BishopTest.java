@@ -1,7 +1,8 @@
 package org.example.chessengine.pieces;
 
-import org.example.chessengine.board.Board;
-import org.example.chessengine.board.Square;
+import org.example.chessengine.state.Board;
+import org.example.chessengine.state.Game;
+import org.example.chessengine.state.Square;
 import org.example.chessengine.move.Move;
 import org.example.chessengine.move.MoveType;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,13 +14,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BishopTest {
 
+    private Game game;
     private Board board;
     private Bishop whiteBishop;
     private Bishop blackBishop;
 
     @BeforeEach
     void setUp() {
-        board = new Board();
+        game = new Game();
+        board = game.getBoard();
         whiteBishop = new Bishop(Color.WHITE);
         blackBishop = new Bishop(Color.BLACK);
     }
@@ -27,7 +30,7 @@ class BishopTest {
     @Test
     void testWhiteBishopMovesUnblockedFromCenter() {
         Square from = new Square(3, 3); // d4
-        board.setPiece(from, whiteBishop);
+        game.placePiece(from, whiteBishop);
         List<Move> moves = whiteBishop.generateMoves(board, from);
 
         // There are 13 possible diagonal destinations from center
@@ -43,8 +46,8 @@ class BishopTest {
     void testBishopStopsBeforeFriendlyPiece() {
         Square from = new Square(2, 2); // c3
         Square blocker = new Square(4, 4); // e5
-        board.setPiece(from, whiteBishop);
-        board.setPiece(blocker, new Pawn(Color.WHITE));
+        game.placePiece(from, whiteBishop);
+        game.placePiece(blocker, new Pawn(Color.WHITE));
 
         List<Move> moves = whiteBishop.generateMoves(board, from);
 
@@ -57,8 +60,8 @@ class BishopTest {
     void testBishopCanCaptureEnemyPiece() {
         Square from = new Square(2, 2); // c3
         Square target = new Square(4, 4); // e5
-        board.setPiece(from, whiteBishop);
-        board.setPiece(target, new Pawn(Color.BLACK));
+        game.placePiece(from, whiteBishop);
+        game.placePiece(target, new Pawn(Color.BLACK));
 
         List<Move> moves = whiteBishop.generateMoves(board, from);
 
@@ -71,9 +74,9 @@ class BishopTest {
         Square from = new Square(2, 2);
         Square block = new Square(3, 3);
         Square behind = new Square(4, 4);
-        board.setPiece(from, whiteBishop);
-        board.setPiece(block, new Pawn(Color.BLACK));
-        board.setPiece(behind, new Pawn(Color.BLACK));
+        game.placePiece(from, whiteBishop);
+        game.placePiece(block, new Pawn(Color.BLACK));
+        game.placePiece(behind, new Pawn(Color.BLACK));
 
         List<Move> moves = whiteBishop.generateMoves(board, from);
 
@@ -84,7 +87,7 @@ class BishopTest {
     @Test
     void testBlackBishopSameMovesAsWhite() {
         Square from = new Square(3, 3);
-        board.setPiece(from, blackBishop);
+        game.placePiece(from, blackBishop);
         List<Move> moves = blackBishop.generateMoves(board, from);
 
         assertTrue(moves.stream().anyMatch(m -> m.to().equals(new Square(0, 0))));
@@ -95,8 +98,8 @@ class BishopTest {
     void testBlackBishopCapturesWhite() {
         Square from = new Square(1, 1);
         Square target = new Square(3, 3);
-        board.setPiece(from, blackBishop);
-        board.setPiece(target, whiteBishop);
+        game.placePiece(from, blackBishop);
+        game.placePiece(target, whiteBishop);
 
         Move move = new Move(from, target, MoveType.CAPTURE);
         assertTrue(blackBishop.isValidMove(board, move));
@@ -107,7 +110,7 @@ class BishopTest {
     @Test
     void testBishopEdgeOfBoard() {
         Square from = new Square(0, 0); // a1
-        board.setPiece(from, whiteBishop);
+        game.placePiece(from, whiteBishop);
 
         List<Move> moves = whiteBishop.generateMoves(board, from);
         assertTrue(moves.stream().allMatch(m -> m.to().isValid()));

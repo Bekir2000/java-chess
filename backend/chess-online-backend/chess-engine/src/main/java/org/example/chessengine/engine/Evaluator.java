@@ -10,7 +10,7 @@ public class Evaluator {
 
         for (int file = 0; file < 8; file++) {
             for (int rank = 0; rank < 8; rank++) {
-                Piece piece = game.getBoard().getPiece(new org.example.chessengine.board.Square(file, rank));
+                Piece piece = game.getBoard().getPiece(new org.example.chessengine.state.Square(file, rank));
                 if (piece != null) {
                     int value = getPieceValue(piece.getType());
                     score += piece.getColor() == Color.WHITE ? value : -value;

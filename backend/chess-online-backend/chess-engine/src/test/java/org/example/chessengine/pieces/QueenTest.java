@@ -1,7 +1,8 @@
 package org.example.chessengine.pieces;
 
-import org.example.chessengine.board.Board;
-import org.example.chessengine.board.Square;
+import org.example.chessengine.state.Board;
+import org.example.chessengine.state.Game;
+import org.example.chessengine.state.Square;
 import org.example.chessengine.move.Move;
 import org.example.chessengine.move.MoveType;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,13 +14,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class QueenTest {
 
+    private Game game;
     private Board board;
     private Queen whiteQueen;
     private Queen blackQueen;
 
     @BeforeEach
     void setUp() {
-        board = new Board();
+        game = new Game();
+        board = game.getBoard();
         whiteQueen = new Queen(Color.WHITE);
         blackQueen = new Queen(Color.BLACK);
     }
@@ -27,7 +30,7 @@ class QueenTest {
     @Test
     void testWhiteQueenFullRangeFromCenter() {
         Square from = new Square(3, 3); // d4
-        board.setPiece(from, whiteQueen);
+        game.placePiece(from, whiteQueen);
         List<Move> moves = whiteQueen.generateMoves(board, from);
 
         // From d4, queen has 27 possible moves (7 each in 4 directions - minus overlaps)
@@ -46,8 +49,8 @@ class QueenTest {
     void testQueenStopsAtFriendlyPiece() {
         Square from = new Square(3, 3);
         Square blocker = new Square(3, 5); // vertical
-        board.setPiece(from, whiteQueen);
-        board.setPiece(blocker, new Pawn(Color.WHITE));
+        game.placePiece(from, whiteQueen);
+        game.placePiece(blocker, new Pawn(Color.WHITE));
 
         List<Move> moves = whiteQueen.generateMoves(board, from);
 
@@ -59,8 +62,8 @@ class QueenTest {
     void testQueenCapturesEnemyPiece() {
         Square from = new Square(3, 3);
         Square target = new Square(3, 6); // vertical
-        board.setPiece(from, whiteQueen);
-        board.setPiece(target, new Rook(Color.BLACK));
+        game.placePiece(from, whiteQueen);
+        game.placePiece(target, new Rook(Color.BLACK));
 
         List<Move> moves = whiteQueen.generateMoves(board, from);
         assertTrue(moves.stream().anyMatch(m -> m.to().equals(target) && m.type() == MoveType.CAPTURE));
@@ -72,9 +75,9 @@ class QueenTest {
         Square from = new Square(3, 3);
         Square blocker = new Square(3, 4);
         Square behind = new Square(3, 5);
-        board.setPiece(from, whiteQueen);
-        board.setPiece(blocker, new Rook(Color.BLACK));
-        board.setPiece(behind, new Rook(Color.BLACK));
+        game.placePiece(from, whiteQueen);
+        game.placePiece(blocker, new Rook(Color.BLACK));
+        game.placePiece(behind, new Rook(Color.BLACK));
 
         List<Move> moves = whiteQueen.generateMoves(board, from);
 
@@ -85,7 +88,7 @@ class QueenTest {
     @Test
     void testBlackQueenSameBehaviorAsWhite() {
         Square from = new Square(4, 4);
-        board.setPiece(from, blackQueen);
+        game.placePiece(from, blackQueen);
         List<Move> moves = blackQueen.generateMoves(board, from);
 
         assertTrue(moves.stream().anyMatch(m -> m.to().equals(new Square(7, 7))));
@@ -98,8 +101,8 @@ class QueenTest {
     void testBlackQueenCapturesWhitePiece() {
         Square from = new Square(4, 4);
         Square target = new Square(4, 2);
-        board.setPiece(from, blackQueen);
-        board.setPiece(target, new Queen(Color.WHITE));
+        game.placePiece(from, blackQueen);
+        game.placePiece(target, new Queen(Color.WHITE));
 
         Move move = new Move(from, target, MoveType.CAPTURE);
         assertTrue(blackQueen.isValidMove(board, move));
@@ -110,7 +113,7 @@ class QueenTest {
     @Test
     void testQueenEdgeOfBoard() {
         Square from = new Square(0, 0);
-        board.setPiece(from, whiteQueen);
+        game.placePiece(from, whiteQueen);
 
         List<Move> moves = whiteQueen.generateMoves(board, from);
         assertTrue(moves.stream().allMatch(m -> m.to().isValid()));

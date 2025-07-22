@@ -1,7 +1,6 @@
 package org.example.chessengine.move;
 
-import org.example.chessengine.board.Board;
-import org.example.chessengine.board.Square;
+import org.example.chessengine.state.Square;
 import org.example.chessengine.pieces.Color;
 import org.example.chessengine.pieces.King;
 import org.example.chessengine.pieces.Pawn;
@@ -31,7 +30,7 @@ class MoveValidatorTest {
     @Test
     void testRejectsMoveOfWrongColor() {
         Square from = new Square(4, 6); // black pawn
-        game.getBoard().setPiece(from, new Pawn(Color.BLACK));
+        game.placePiece(from, new Pawn(Color.BLACK));
 
         Move move = new Move(from, new Square(4, 5));
         assertFalse(validator.isLegalMove(game, move));
@@ -40,7 +39,7 @@ class MoveValidatorTest {
     @Test
     void testRejectsMoveNotValidByPieceLogic() {
         Square from = new Square(4, 1); // white pawn
-        game.getBoard().setPiece(from, new Pawn(Color.WHITE));
+        game.placePiece(from, new Pawn(Color.WHITE));
 
         Move move = new Move(from, new Square(4, 5)); // illegal jump
         assertFalse(validator.isLegalMove(game, move));
@@ -50,15 +49,15 @@ class MoveValidatorTest {
     void testRejectsMoveLeavingKingInCheck() {
         // White king
         Square whiteKing = new Square(4, 0);
-        game.getBoard().setPiece(whiteKing, new King(Color.WHITE));
+        game.placePiece(whiteKing, new King(Color.WHITE));
 
         // White pawn to move
         Square from = new Square(4, 1);
         Square to = new Square(4, 2);
-        game.getBoard().setPiece(from, new Pawn(Color.WHITE));
+        game.placePiece(from, new Pawn(Color.WHITE));
 
         // Black rook attacking from h1
-        game.getBoard().setPiece(new Square(7, 0), new org.example.chessengine.pieces.Rook(Color.BLACK));
+        game.placePiece(new Square(7, 0), new org.example.chessengine.pieces.Rook(Color.BLACK));
 
         Move move = new Move(from, to);
 
@@ -69,12 +68,12 @@ class MoveValidatorTest {
     void testAcceptsValidMove() {
         // King setup
         Square king = new Square(4, 0);
-        game.getBoard().setPiece(king, new King(Color.WHITE));
+        game.placePiece(king, new King(Color.WHITE));
 
         // Pawn forward move
         Square from = new Square(4, 1);
         Square to = new Square(4, 2);
-        game.getBoard().setPiece(from, new Pawn(Color.WHITE));
+        game.placePiece(from, new Pawn(Color.WHITE));
 
         Move move = new Move(from, to);
         assertTrue(validator.isLegalMove(game, move));

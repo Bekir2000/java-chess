@@ -1,4 +1,4 @@
-package org.example.chessengine.board;
+package org.example.chessengine.state;
 
 public class BoardUtils {
     public static boolean isInBounds(int file, int rank) {

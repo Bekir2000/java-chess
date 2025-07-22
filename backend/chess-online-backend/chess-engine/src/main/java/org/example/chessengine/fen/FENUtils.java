@@ -1,7 +1,8 @@
-package org.example.chessengine.state;
+package org.example.chessengine.fen;
 
-import org.example.chessengine.board.Board;
-import org.example.chessengine.board.Square;
+import org.example.chessengine.state.Board;
+import org.example.chessengine.state.Game;
+import org.example.chessengine.state.Square;
 import org.example.chessengine.pieces.*;
 
 public class FENUtils {
@@ -11,7 +12,10 @@ public class FENUtils {
         String piecePlacement = parts[0];
         String activeColor = parts[1];
 
+        Color turn = activeColor.equals("w") ? Color.WHITE : Color.BLACK;
         Board board = new Board();
+        Game game = new Game(board, turn); // assumes Game constructor initializes Board internally
+
         int rank = 7;
         int file = 0;
 
@@ -32,14 +36,12 @@ public class FENUtils {
                     case 'k' -> new King(color);
                     default -> throw new IllegalArgumentException("Unknown piece: " + c);
                 };
-                board.setPiece(new Square(file, rank), piece);
+                game.placePiece(new Square(file, rank), piece);
                 file++;
             }
         }
 
-        Color turn = activeColor.equals("w") ? Color.WHITE : Color.BLACK;
-
-        return new Game(board, turn);
+        return game;
     }
 
     public static String toFEN(Game game) {

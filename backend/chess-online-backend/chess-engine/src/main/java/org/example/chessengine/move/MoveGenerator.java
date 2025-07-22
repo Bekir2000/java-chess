@@ -1,7 +1,7 @@
 package org.example.chessengine.move;
 
-import org.example.chessengine.board.Board;
-import org.example.chessengine.board.Square;
+import org.example.chessengine.state.Board;
+import org.example.chessengine.state.Square;
 import org.example.chessengine.pieces.Color;
 import org.example.chessengine.pieces.Piece;
 

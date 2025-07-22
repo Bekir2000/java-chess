@@ -1,6 +1,7 @@
-package org.example.chessengine.board;
+package org.example.chessengine.state;
 
 public record Square(int file, int rank) {
+
 
     public static Square fromAlgebraic(String notation) {
         int file = notation.charAt(0) - 'a';
@@ -14,5 +15,10 @@ public record Square(int file, int rank) {
 
     public boolean isValid() {
         return file >= 0 && file < 8 && rank >= 0 && rank < 8;
+    }
+
+    @Override
+    public String toString() {
+        return "" + (char) ('a' + file) + (rank + 1);
     }
 }

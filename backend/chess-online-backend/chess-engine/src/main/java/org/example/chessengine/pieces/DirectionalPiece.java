@@ -1,7 +1,7 @@
 package org.example.chessengine.pieces;
 
-import org.example.chessengine.board.Board;
-import org.example.chessengine.board.Square;
+import org.example.chessengine.state.Board;
+import org.example.chessengine.state.Square;
 import org.example.chessengine.move.Move;
 import org.example.chessengine.move.MoveType;
 
@@ -21,8 +21,8 @@ public abstract class DirectionalPiece extends Piece {
 
     @Override
     public boolean isValidMove(Board board, Move move) {
-        Square from = move.getFrom();
-        Square to = move.getTo();
+        Square from = move.from();
+        Square to = move.to();
 
         int dFile = to.file() - from.file();
         int dRank = to.rank() - from.rank();
