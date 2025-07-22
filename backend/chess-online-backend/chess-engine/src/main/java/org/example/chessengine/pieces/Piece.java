@@ -25,5 +25,7 @@ public abstract class Piece {
 
     // Generate possible moves for this piece at a square on a given board
     public abstract List<Move> generateMoves(Board board, Square from);
+    public abstract boolean isValidMove(Board board, Move move);
+    public abstract char toFenChar();
 }
 

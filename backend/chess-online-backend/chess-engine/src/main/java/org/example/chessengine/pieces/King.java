@@ -9,5 +9,10 @@ public class King extends DirectionalPiece {
     public King(Color color) {
         super(color, PieceType.KING, KING_DIRS, 1);
     }
+
+    @Override
+    public char toFenChar() {
+        return (color == Color.WHITE) ? 'K' : 'k';
+    }
 }
 

@@ -9,5 +9,10 @@ public class Queen extends DirectionalPiece {
     public Queen(Color color) {
         super(color, PieceType.QUEEN, QUEEN_DIRS, 7);
     }
+
+    @Override
+    public char toFenChar() {
+        return (color == Color.WHITE) ? 'Q' : 'q';
+    }
 }
 

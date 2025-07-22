@@ -43,8 +43,8 @@ public class Knight extends Piece {
 
     @Override
     public boolean isValidMove(Board board, Move move) {
-        Square from = move.getFrom();
-        Square to = move.getTo();
+        Square from = move.from();
+        Square to = move.to();
 
         int df = Math.abs(from.file() - to.file());
         int dr = Math.abs(from.rank() - to.rank());
@@ -56,6 +56,11 @@ public class Knight extends Piece {
 
         Piece target = board.getPiece(to);
         return target == null || target.getColor() != this.color;
+    }
+
+    @Override
+    public char toFenChar() {
+        return (color == Color.WHITE) ? 'N' : 'n';
     }
 }
 

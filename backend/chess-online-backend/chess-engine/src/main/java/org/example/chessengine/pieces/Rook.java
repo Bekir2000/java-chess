@@ -8,4 +8,9 @@ public class Rook extends DirectionalPiece {
     public Rook(Color color) {
         super(color, PieceType.ROOK, ROOK_DIRS, 7);
     }
+
+    @Override
+    public char toFenChar() {
+        return (color == Color.WHITE) ? 'R' : 'r';
+    }
 }

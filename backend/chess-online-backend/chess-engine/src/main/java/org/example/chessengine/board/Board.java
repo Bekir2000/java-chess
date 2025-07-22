@@ -38,4 +38,23 @@ public class Board {
         }
         return copy;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int rank = 7; rank >= 0; rank--) {
+            sb.append(rank + 1).append(" "); // Rank number
+            for (int file = 0; file < 8; file++) {
+                Piece piece = squares[file][rank];
+                sb.append(piece != null ? piece.toFenChar() : ".").append(" ");
+            }
+            sb.append("\n");
+        }
+        sb.append("  a b c d e f g h");
+        return sb.toString();
+    }
+
+    public void print() {
+        System.out.println(this);
+    }
 }

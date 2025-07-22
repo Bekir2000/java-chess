@@ -8,5 +8,10 @@ public class Bishop extends DirectionalPiece {
     public Bishop(Color color) {
         super(color, PieceType.BISHOP, BISHOP_DIRS, 7);
     }
+
+    @Override
+    public char toFenChar() {
+        return (color == Color.WHITE) ? 'B' : 'b';
+    }
 }
 

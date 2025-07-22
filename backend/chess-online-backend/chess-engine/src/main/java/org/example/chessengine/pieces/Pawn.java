@@ -55,8 +55,8 @@ public class Pawn extends Piece {
 
     @Override
     public boolean isValidMove(Board board, Move move) {
-        Square from = move.getFrom();
-        Square to = move.getTo();
+        Square from = move.from();
+        Square to = move.to();
 
         int df = to.file() - from.file();
         int dr = to.rank() - from.rank();
@@ -87,6 +87,11 @@ public class Pawn extends Piece {
         }
 
         return false;
+    }
+
+    @Override
+    public char toFenChar() {
+        return (color == Color.WHITE) ? 'P' : 'p';
     }
 }
 
