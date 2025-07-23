@@ -77,7 +77,7 @@ public class Game {
 
         Color opponent = color.opposite();
         MoveGenerator generator = new MoveGenerator();
-        List<Move> opponentMoves = generator.generateAllMoves(board, opponent);
+        List<Move> opponentMoves = generator.generatePseudoLegalMoves(this.getBoard(), opponent);
 
         for (Move move : opponentMoves) {
             if (move.to().equals(kingSquare)) {
@@ -157,7 +157,34 @@ public class Game {
         }
         return null;
     }
+
+    public boolean isGameOver() {
+        return getGameResult() != null;
+    }
+
+    /**
+     * Returns one of:
+     * - "Checkmate - White wins"
+     * - "Checkmate - Black wins"
+     * - "Stalemate"
+     * - null (if game is not over)
+     */
+    public String getGameResult() {
+        MoveGenerator generator = new MoveGenerator();
+        List<Move> legalMoves = generator.generateLegalMoves(this);
+
+        if (!legalMoves.isEmpty()) {
+            return null;
+        }
+
+        if (isInCheck(turn)) {
+            return "Checkmate - " + turn.opposite() + " wins";
+        } else {
+            return "Stalemate";
+        }
+    }
 }
+
 
 
 
