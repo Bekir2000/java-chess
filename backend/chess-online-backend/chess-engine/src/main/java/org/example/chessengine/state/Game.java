@@ -28,6 +28,11 @@ public class Game {
         this.blackKingPos = findKing(Color.BLACK);
     }
 
+    public Game(String fen) {
+        this(new Board(), Color.WHITE);
+        loadFromFEN(fen);
+    }
+
     public Game() {
         this(new Board(), Color.WHITE);
     }
