@@ -1,0 +1,77 @@
+/* src/main/resources/css/chess.css — Lichess “Green” theme */
+
+.root {
+    -fx-background-color: #e0e0e0; /* page gray */
+}
+
+.board-grid {
+    -fx-padding: 0;               /* flush board edges */
+    -fx-background-color: transparent; /* let tiles show */
+    -fx-border-color: #000;       /* thin black frame */
+    -fx-border-width: 2px;
+    -fx-border-radius: 0;
+}
+
+.tile {
+    -fx-pref-width: 80px;
+    -fx-pref-height: 80px;
+    -fx-cursor: hand;
+}
+
+/* Lichess default light/dark greens */
+.light { -fx-background-color: #eeeed2; }
+.dark  { -fx-background-color: #769656; }
+
+/* Yellowish highlight for hover */
+.tile:hover { -fx-background-color: rgba(255, 255, 0, 0.25); }
+
+/* Bright outline on selected */
+.selected {
+    /* instead of border, apply a translucent yellow overlay so cell size never changes */
+    -fx-background-color: rgba(255, 255, 0, 0.35);
+}
+
+.piece-image {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 4, 0, 0, 1);
+}
+
+.hint {
+    -fx-background-color: rgba(0,0,0,0.45);
+    -fx-shape: "M 0 4 a 4 4 0 1 0 8 0 a 4 4 0 1 0 -8 0";
+    -fx-pref-width: 8px;
+    -fx-pref-height: 8px;
+    -fx-max-width: 8px;
+    -fx-max-height: 8px;
+    -fx-background-radius: 4px;
+    -fx-alignment: center;
+}
+
+/* Overlay backdrop */
+#msg-layer {
+    -fx-background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Message card */
+#game-over-card {
+    -fx-background-color: linear-gradient(to bottom, #444, #222);
+    -fx-background-radius: 12;
+    -fx-padding: 30px 50px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 20, 0.4, 0, 4);
+    -fx-alignment: center;
+}
+
+/* Message text */
+#game-over-label {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-text-alignment: center;
+}
+
+
+
+
+
+
+
+
